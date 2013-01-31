@@ -1,0 +1,11 @@
+{
+    "commands" : {
+    	  "python"     : "python {{file}}"
+    	, "ruby"       : "ruby {{file}}"
+    	, "javascript" : "node {{file}}"
+    	, "php"        : "php {{file}}"
+      , "shell-unix-generic" : "bash {{file}}"
+      , "perl"       : "perl {{file}}"
+  	}
+  , "show_result_in_buffer" : true
+}
