@@ -1,0 +1,4 @@
+[
+    { "keys": ["alt+r"], "command": "run_code" }
+  , { "keys": ["alt+shift+r"], "command": "run_code_custom" }
+]

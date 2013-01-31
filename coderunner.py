@@ -49,11 +49,12 @@ class RunThread(threading.Thread):
     command = ""
     result  = ""
 
-    def __init__(self, command, path, commandObj):
+    def __init__(self, command, path, args, commandObj):
 
         self.command    = command
         self.commandObj = commandObj
         self.path       = '"' + path + '"'
+        self.args       = args
         threading.Thread.__init__(self)
         
     def run(self):
@@ -65,7 +66,11 @@ class RunThread(threading.Thread):
 
         eclapsed = time.time()
 
-        run = subprocess.Popen(self.command.replace("{{file}}", self.path)
+        cmd = self.command.replace("{{file}}", self.path).replace("{{args}}", self.args)
+
+        sys.stdout.write(cmd + "\n")
+
+        run = subprocess.Popen(cmd
                 , bufsize = -1
                 , shell   = True
                 , stdout  = subprocess.PIPE
@@ -81,6 +86,8 @@ class RunThread(threading.Thread):
         else:
             self.result = "Run Completed in {0}ms".format(eclapsed)
 
+        sys.stdout.write(stderr)
+
         # Collect stdout and stderr, show them in a new buffer
         if stderr or stdout:
             self.stdout = stdout
@@ -90,10 +97,7 @@ class RunThread(threading.Thread):
     def show_res(self):
         
         template = """/*
- * ================================================================================
- * Run Result from :
- * {0}
- * ================================================================================
+ * Run Result from : {0}
  */
 
 {1}
@@ -109,8 +113,10 @@ class RunThread(threading.Thread):
         new_view.set_name("Run Result")
         new_view.set_read_only(False)
 
-        edit = new_view.begin_edit()
-        new_view.insert( edit, 0, template.format( self.path, self.stdout or self.stderr ))
+        edit   = new_view.begin_edit()
+        output = template.format( self.path, self.stdout or self.stderr )
+
+        new_view.insert( edit, 0, output.decode(sys.getfilesystemencoding()) )
         new_view.end_edit(edit)
         
         new_view.set_read_only(True)
@@ -119,7 +125,7 @@ class RunThread(threading.Thread):
 
 
 class RunCodeCommand(sublime_plugin.WindowCommand):
-    def run(self):
+    def run(self, args=""):
         view     = self.window.active_view()
         settings = view.settings()
         syntax   = settings.get( 'syntax' )
@@ -132,13 +138,22 @@ class RunCodeCommand(sublime_plugin.WindowCommand):
           return
 
         # Generate a thread to execute the command
-        thread = RunThread( commands[language], view.file_name(), self )
+        thread = RunThread( commands[language], view.file_name(), args , self )
         thread.start()
 
         # Show process indicator
         ThreadProgress(thread, "Running...")
 
-class RunCustomCodeCommand(sublime_plugin.WindowCommand):
-    pass
+
+class RunCodeCustomCommand(sublime_plugin.WindowCommand):
+
+    lastArgs = ""
+
+    def run(self):
+        self.window.show_input_panel("Custom Arguments"
+            , self.lastArgs
+            , lambda a : self.window.run_command("run_code", { "args" : a } )
+            , None
+            , None)
 
     
