@@ -8,4 +8,4 @@ currently supported command :
    -  `run_code_custom`
 
 you can bind your key to the command like this :
-   { "keys" : ["ctrl+r"], "command": "run_code" }
+   `{ "keys" : ["ctrl+r"], "command": "run_code" }`
