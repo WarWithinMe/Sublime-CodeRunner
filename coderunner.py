@@ -5,6 +5,7 @@ import os
 import threading
 import math
 import time
+import tempfile
 
 class ThreadProgress():
     """
@@ -67,8 +68,6 @@ class RunThread(threading.Thread):
         eclapsed = time.time()
 
         cmd = self.command.replace("{{file}}", self.path).replace("{{args}}", self.args)
-
-        sys.stdout.write(cmd + "\n")
 
         run = subprocess.Popen(cmd
                 , bufsize = -1
@@ -138,7 +137,20 @@ class RunCodeCommand(sublime_plugin.WindowCommand):
           return
 
         # Generate a thread to execute the command
-        thread = RunThread( commands[language], view.file_name(), args , self )
+        sys.stdout.write(tempfile.tempdir)
+        filename = view.file_name()
+        if view.is_dirty():
+            # Save the dirty content to a temp file
+            filename = os.path.normpath(tempfile.tempdir) + "/" + command_settings.get("temp_file_name")
+            try:
+                temp = open(filename, "w")
+            except:
+                sublime.status_message("Cannot save buffer to temp file for running!")
+                return
+            temp.write(view.substr(sublime.Region(0,view.size())))
+            temp.close()
+
+        thread = RunThread( commands[language], filename, args , self )
         thread.start()
 
         # Show process indicator

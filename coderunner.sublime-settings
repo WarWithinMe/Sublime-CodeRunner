@@ -8,4 +8,5 @@
       , "perl"        : "perl {{file}} {{args}}"
   	}
   , "show_result_in_buffer" : true
+  , "temp_file_name"  : "coderunner_temp"
 }
