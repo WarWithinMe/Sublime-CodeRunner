@@ -1,8 +1,9 @@
 Sublime-CodeRunner
 ==================
 
-A simple plugin to allow you to run the current file, and show the result in sublimetext
-You need to save the file before running this command.
+A simple plugin to use the current file as source code, run it and show the result.
+It is just like the Mac App `CodeRunner`, with less feature.
+
 
 ## currently supported command :
    -  `run_code`
