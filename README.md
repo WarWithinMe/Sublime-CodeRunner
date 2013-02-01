@@ -10,7 +10,3 @@ You need to save the file before running this command.
 
 ## you can bind your key to the command like this :
    `{ "keys" : ["ctrl+r"], "command": "run_code" }`
-   
-
-## TODO:
-   Run the code without saving the buffer to a file
