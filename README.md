@@ -2,7 +2,7 @@ Sublime-CodeRunner
 ==================
 
 A simple plugin to use the current file as source code, run it and show the result.
-It is just like the Mac App `CodeRunner`, with less feature.
+It is just like the Mac App `CodeRunner`, but with less feature.
 
 
 ## currently supported command :
